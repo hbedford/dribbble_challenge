@@ -51,5 +51,10 @@ void main() {
       final futureResponse = sut.request(url: url, method: 'post');
       expect(futureResponse, throwsA(HttpError.badRequest));
     });
+    test('Should return UnautorizedError if post returns 401', () {
+      mockResponse(401);
+      final futureResponse = sut.request(url: url, method: 'post');
+      expect(futureResponse, throwsA(HttpError.unauthorized));
+    });
   });
 }
