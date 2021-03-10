@@ -8,12 +8,14 @@ class App extends StatelessWidget {
   ThemeData themeData() => ThemeData(
         primarySwatch: Colors.blue,
         textTheme: TextTheme(
-          headline1: TextStyle(
-            fontWeight: FontWeight.w700,
-            color: Colors.blue,
-            fontSize: 28.0,
-          ),
-        ),
+            headline1: TextStyle(
+              fontWeight: FontWeight.w700,
+              color: Colors.blue,
+              fontSize: 28.0,
+            ),
+            headline2: TextStyle(
+                color: Colors.blue, fontSize: 20, fontWeight: FontWeight.w400),
+            bodyText1: TextStyle()),
       );
   @override
   Widget build(BuildContext context) {
