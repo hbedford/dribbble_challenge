@@ -1,6 +1,9 @@
+import 'package:dribbble_challenge/infra/injections.dart';
+import 'package:dribbble_challenge/ui/screens/login/login_controller.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatelessWidget {
+  final controller = injection.get<LoginController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +26,7 @@ class LoginScreen extends StatelessWidget {
                 Expanded(
                   child: ElevatedButton(
                     child: Text('Entrar'.toUpperCase()),
-                    onPressed: () => null,
+                    onPressed: controller.login,
                   ),
                 ),
               ],
