@@ -29,5 +29,12 @@ void main() {
       final future = sut.request(url: url, method: 'invalid');
       expect(future, throwsA(HttpError.serverError));
     });
+    test('Should return null if post returns 200 without data', () async {
+      mockResponse(200, body: '');
+
+      final response = await sut.request(url: url, method: 'post');
+
+      expect(response, null);
+    });
   });
 }
