@@ -1,4 +1,5 @@
 import 'package:dribbble_challenge/infra/http/http_adapter.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
@@ -38,14 +39,18 @@ class LoginController {
   void getToken() async {
     HttpAdapter httpClient = HttpAdapter(Client());
 
-    Map res = await httpClient.request(
-      url:
-          'https://dribbble.com/oauth/token?client_id=$clientId&client_secret=$secretClient&code=$code',
-      method: 'post',
-    );
-    token = res['access_token'];
-    saveToken(res['access_token']);
-    navigateTo('/home');
+    try {
+      Map res = await httpClient.request(
+        url:
+            'https://dribbble.com/oauth/token?client_id=$clientId&client_secret=$secretClient&code=$code',
+        method: 'post',
+      );
+      token = res['access_token'];
+      saveToken(res['access_token']);
+      navigateTo('/home');
+    } catch (e) {
+      return null;
+    }
   }
 
   void saveToken(String value) async {
@@ -59,11 +64,15 @@ class LoginController {
   Future<bool> checkToken() async {
     HttpAdapter httpClient = HttpAdapter(Client());
 
-    final res = await httpClient.request(
-        url: 'https://api.dribbble.com/v2/user',
-        method: 'get',
-        headers: {'Authorization': 'Bearer $token'});
-    return res != null;
+    try {
+      final res = await httpClient.request(
+          url: 'https://api.dribbble.com/v2/user',
+          method: 'get',
+          headers: {'Authorization': 'Bearer $token'});
+      return res != null;
+    } catch (e) {
+      return false;
+    }
   }
 
   void loadToken() async {
@@ -72,10 +81,21 @@ class LoginController {
     if (value != null) {
       print(value + ' token');
       token = value;
-      if (await checkToken()) {
+      bool isValid = await checkToken();
+      if (isValid) {
         navigateTo('/home');
-      } else
+      } else {
         navigateTo('/login');
+        Future.delayed(Duration(seconds: 1), () {
+          print('a');
+          Flushbar(
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 4),
+            title: 'Ops, houve um problema',
+            message: 'Certifique que sua conexão esteja estavel.',
+          ).show(context);
+        });
+      }
     } else
       navigateTo('/login');
   }

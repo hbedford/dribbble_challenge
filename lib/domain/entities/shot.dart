@@ -10,10 +10,13 @@ class Shot {
   String updateAt;
   String image;
   ValueNotifier<File> file;
+  ValueNotifier<String> textError;
 
   final TextEditingController titleEdit = TextEditingController();
   final TextEditingController descriptionEdit = TextEditingController();
-  Shot() : this.file = ValueNotifier<File>(null);
+  Shot()
+      : this.file = ValueNotifier<File>(null),
+        this.textError = ValueNotifier<String>(null);
   Shot.fromJson(Map map) {
     this.id = map['id'];
     this.title = map['title'];
@@ -22,9 +25,10 @@ class Shot {
     this.updateAt = map['update_at'];
     this.image = map['images']['normal'];
     this.file = ValueNotifier<File>(null);
+    this.textError = ValueNotifier<String>(null);
   }
   addImageFile(File value) => file.value = value;
-
+  changeErrorText(String value) => textError.value = value;
   Map get toJson => {
         'id': this.id,
         'title': this.title,

@@ -50,13 +50,17 @@ class ShotController {
       response.stream.transform(utf8.decoder).listen((value) {
         print(value);
       });
-    } else
+    } else {
+      if (!shot.value.isValidTitle) {
+        shot.value.changeErrorText('É necessario inserir um titulo.');
+      }
       Flushbar(
         backgroundColor: Colors.red,
         duration: Duration(seconds: 4),
         title: 'Ops, falta informações',
         message: 'É necessario ter a imagem e titulo para criar o Shot',
       ).show(context);
+    }
   }
 
   sendAttachment(BuildContext context) async {

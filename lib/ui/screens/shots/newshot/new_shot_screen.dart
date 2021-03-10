@@ -42,7 +42,9 @@ class NewShotScreen extends StatelessWidget {
                     ),
                   )),
               Container(
-                  height: constraints.maxHeight * 0.2,
+                  height: constraints.maxHeight * 0.15,
+                  margin: EdgeInsets.symmetric(
+                      vertical: constraints.maxHeight * 0.02),
                   child: LayoutBuilder(
                     builder: (_, constraint) => Container(
                       margin: EdgeInsets.only(top: constraint.maxHeight * 0.1),
@@ -59,7 +61,7 @@ class NewShotScreen extends StatelessWidget {
                   margin: EdgeInsets.symmetric(
                       vertical: constraints.maxHeight * 0.02),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Padding(
@@ -68,8 +70,12 @@ class NewShotScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text('Titulo'),
-                            TextFieldWidget(
-                              controller: controller.shot.value.titleEdit,
+                            ValueListenableBuilder(
+                              valueListenable: controller.shot.value.textError,
+                              builder: (_, value, child) => TextFieldWidget(
+                                controller: controller.shot.value.titleEdit,
+                                textError: value,
+                              ),
                             ),
                           ],
                         ),

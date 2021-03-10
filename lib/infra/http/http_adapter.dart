@@ -21,10 +21,6 @@ class HttpAdapter implements HttpClient {
       @required String method,
       Map body,
       Map<String, String> headers}) async {
-    /* final headers = {
-      'content-type': 'aplication/json',
-      'accept': 'application/json'
-    }; */
     final defaultHeaders = headers?.cast<String, String>() ?? {}
       ..addAll(
           {'content-type': 'application/json', 'accept': 'application/json'});
@@ -39,15 +35,10 @@ class HttpAdapter implements HttpClient {
       } else if (method == 'get') {
         futureResponse = client.get(Uri.parse(url), headers: defaultHeaders);
       }
-      /* else if (method == 'put') {
-        futureResponse =
-            client.put(Uri.parse(url), headers: headers, body: jsonBody);
-      } */
       if (futureResponse != null) {
         response = await futureResponse.timeout(Duration(seconds: 10));
       }
     } catch (error) {
-      print(error);
       throw HttpError.serverError;
     }
     return _handleResponse(response);

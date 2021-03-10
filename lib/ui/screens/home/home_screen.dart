@@ -4,22 +4,12 @@ import 'package:flutter/material.dart';
 import 'components/shot_widget.dart';
 import 'home_controller.dart';
 
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
+class HomeScreen extends StatelessWidget {
   final controller = injection.get<HomeController>();
-  @override
-  void initState() {
-    super.initState();
-
-    controller.loadShots();
-  }
 
   @override
   Widget build(BuildContext context) {
+    controller.loadShots(context);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -32,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       body: RefreshIndicator(
-        onRefresh: controller.loadShots,
+        onRefresh: () => controller.loadShots(context),
         child: LayoutBuilder(
           builder: (_, constraints) => Padding(
             padding: const EdgeInsets.all(8.0),
