@@ -61,5 +61,10 @@ void main() {
       final futureResponse = sut.request(url: url, method: 'post');
       expect(futureResponse, throwsA(HttpError.forbidden));
     });
+    test('Should return NotFoundError if post returns 404', () {
+      mockResponse(404);
+      final futureResponse = sut.request(url: url, method: 'post');
+      expect(futureResponse, throwsA(HttpError.notFound));
+    });
   });
 }
