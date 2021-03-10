@@ -32,6 +32,7 @@ dependencies:
   get_it:
   url_launcher:
   shared_preferences: ^2.0.3
+  dotted_border:
 
 dev_dependencies:
   flutter_test:

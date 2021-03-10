@@ -1,9 +1,10 @@
-import 'package:dribbble_challenge/ui/screens/loading/loading_screen.dart';
-import 'package:dribbble_challenge/ui/screens/shots/shot_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'screens/home/home_screen.dart';
 import 'screens/login/login_screen.dart';
+import 'screens/shots/newshot/new_shot_screen.dart';
+import 'package:dribbble_challenge/ui/screens/loading/loading_screen.dart';
+import 'package:dribbble_challenge/ui/screens/shots/shot_screen.dart';
 
 class App extends StatelessWidget {
   ThemeData themeData() => ThemeData(
@@ -28,6 +29,7 @@ class App extends StatelessWidget {
         '/login': (context) => LoginScreen(),
         '/home': (context) => HomeScreen(),
         '/shot': (context) => ShotScreen(),
+        '/newshot': (context) => NewShotScreen(),
       },
     );
   }

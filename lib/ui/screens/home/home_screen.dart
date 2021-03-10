@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => null,
+        onPressed: () => controller.goToNewShot(context),
         child: Icon(Icons.add),
       ),
     );
