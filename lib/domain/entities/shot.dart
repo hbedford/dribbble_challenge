@@ -9,6 +9,7 @@ class Shot {
   String publishedAt;
   String updateAt;
   String image;
+  List<String> attachments;
   ValueNotifier<File> file;
   ValueNotifier<String> textError;
   ValueNotifier<bool> haveImage;
@@ -16,6 +17,7 @@ class Shot {
   TextEditingController titleEdit;
   TextEditingController descriptionEdit;
   Shot() {
+    this.attachments = [];
     this.titleEdit = TextEditingController();
     this.descriptionEdit = TextEditingController();
     this.file = ValueNotifier<File>(null);
@@ -29,6 +31,8 @@ class Shot {
     this.publishedAt = map['published_at'];
     this.updateAt = map['update_at'];
     this.image = map['images']['normal'];
+    this.attachments = List<String>.from(
+        map['attachments'].map((data) => data['url']).toList());
     this.file = ValueNotifier<File>(null);
     this.textError = ValueNotifier<String>(null);
   }

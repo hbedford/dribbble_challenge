@@ -69,41 +69,33 @@ class ShotScreen extends StatelessWidget {
                       child: Column(
                     children: [
                       Flexible(
-                        flex: 1,
-                        child: ListView.builder(
-                            itemCount:
-                                controller.shot.value.othersImages.length,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, int index) => InkWell(
-                                  onTap: controller
-                                              .shot.value.othersImages[index] ==
-                                          null
-                                      ? () => null
-                                      : null,
-                                  child: Container(
-                                      margin: EdgeInsets.only(
-                                        left: constraints.maxWidth * 0.05,
-                                      ),
-                                      width: constraints.maxWidth * 0.3,
-                                      height: constraints.maxWidth * 0.05,
-                                      child: Card(
-                                        color: Colors.white,
-                                        child: Center(
-                                          child: controller.shot.value
-                                                      .othersImages[index] !=
-                                                  null
-                                              ? Image.network(controller.shot
-                                                  .value.othersImages[index])
-                                              : Icon(Icons.image,
-                                                  size: constraints.maxWidth *
-                                                      0.1),
-                                        ),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(10)),
-                                      )),
+                          flex: 1,
+                          child: controller.shot.value.attachments.length == 0
+                              ? Center(
+                                  child: Text('Nenhuma sub-imagem encontrada'))
+                              : ListView.builder(
+                                  itemCount:
+                                      controller.shot.value.attachments.length,
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: (context, int index) =>
+                                      Container(
+                                          margin: EdgeInsets.only(
+                                            left: constraints.maxWidth * 0.05,
+                                          ),
+                                          width: constraints.maxWidth * 0.3,
+                                          height: constraints.maxWidth * 0.05,
+                                          child: Card(
+                                            color: Colors.white,
+                                            child: Center(
+                                                child: Image.network(controller
+                                                    .shot
+                                                    .value
+                                                    .othersImages[index])),
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                          )),
                                 )),
-                      ),
                       Expanded(
                         flex: 2,
                         child: Container(),
