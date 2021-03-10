@@ -66,5 +66,10 @@ void main() {
       final futureResponse = sut.request(url: url, method: 'post');
       expect(futureResponse, throwsA(HttpError.notFound));
     });
+    test('Should return ServerError if post returns 500', () {
+      mockResponse(500);
+      final futureResponse = sut.request(url: url, method: 'post');
+      expect(futureResponse, throwsA(HttpError.serverError));
+    });
   });
 }
