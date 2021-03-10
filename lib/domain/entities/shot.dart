@@ -32,6 +32,7 @@ class Shot {
       };
   bool get isValidTitle => titleEdit.text.isNotEmpty;
   bool get isValidImage => file != null;
+  bool get isValidShot => isValidTitle && isValidImage;
 
   List<String> get othersImages {
     List<String> list = List.filled(3, null);

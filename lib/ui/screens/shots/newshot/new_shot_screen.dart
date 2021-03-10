@@ -28,7 +28,7 @@ class NewShotScreen extends StatelessWidget {
                   child: ValueListenableBuilder(
                     valueListenable: controller.shot.value.file,
                     builder: (_, value, child) => InkWell(
-                      onTap: () => null,
+                      onTap: () => controller.getImage(),
                       child: value == null
                           ? DottedBorder(
                               dashPattern: [8, 4],
@@ -91,7 +91,7 @@ class NewShotScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       ElevatedButton(
-                        onPressed: () => null,
+                        onPressed: () => controller.sendShot(context),
                         child: Text('Publicar'.toUpperCase()),
                       ),
                     ],
