@@ -46,5 +46,10 @@ void main() {
       final response = await sut.request(url: url, method: 'post');
       expect(response, null);
     });
+    test('Should return HttpError if post returns 400', () {
+      mockResponse(400);
+      final futureResponse = sut.request(url: url, method: 'post');
+      expect(futureResponse, throwsA(HttpError.badRequest));
+    });
   });
 }
