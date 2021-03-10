@@ -77,4 +77,23 @@ void main() {
       expect(futureResponse, throwsA(HttpError.serverError));
     });
   });
+  group('Method get', () {
+    PostExpectation mockRequest() =>
+        when(client.get(any, headers: anyNamed('headers')));
+
+    void mockResponse(int statusCode,
+            {String body = '{"any_key":"any_value"}'}) =>
+        mockRequest().thenAnswer((_) async => Response(body, statusCode));
+
+    void mockError() => mockRequest().thenThrow(Exception());
+
+    setUp(() {
+      mockResponse(200);
+    });
+    test('Should return data if get returns 200', () async {
+      final response = await sut.request(url: url, method: 'get');
+
+      expect(response, {'any_key': 'any_value'});
+    });
+  });
 }
