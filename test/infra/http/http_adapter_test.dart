@@ -41,5 +41,10 @@ void main() {
 
       expect(response, {'any_key': 'any_value'});
     });
+    test('Should return null if post returns 204', () async {
+      mockResponse(204);
+      final response = await sut.request(url: url, method: 'post');
+      expect(response, null);
+    });
   });
 }
