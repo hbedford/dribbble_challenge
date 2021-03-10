@@ -23,12 +23,19 @@ class Shot {
     this.image = map['images']['normal'];
     this.file = ValueNotifier<File>(null);
   }
+  addImageFile(File value) => file.value = value;
+
   Map get toJson => {
         'id': this.id,
         'title': this.title,
         'description': this.description,
       };
-  addImageFile(File value) => file.value = value;
   bool get isValidTitle => titleEdit.text.isNotEmpty;
   bool get isValidImage => file != null;
+
+  List<String> get othersImages {
+    List<String> list = List.filled(3, null);
+
+    return list;
+  }
 }

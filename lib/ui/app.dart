@@ -1,4 +1,5 @@
 import 'package:dribbble_challenge/ui/screens/loading/loading_screen.dart';
+import 'package:dribbble_challenge/ui/screens/shots/shot_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'screens/home/home_screen.dart';
@@ -25,7 +26,8 @@ class App extends StatelessWidget {
       routes: {
         '/loading': (context) => LoadingScreen(),
         '/login': (context) => LoginScreen(),
-        '/home': (context) => HomeScreen()
+        '/home': (context) => HomeScreen(),
+        '/shot': (context) => ShotScreen(),
       },
     );
   }
