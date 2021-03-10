@@ -1,4 +1,5 @@
 import 'package:dribbble_challenge/infra/http/http_adapter.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,17 +13,19 @@ class LoginController {
 
   String code;
   String token;
-
+  BuildContext context;
+  ValueNotifier<bool> isLoading;
   static const stream = const EventChannel('poc.deeplink.flutter.dev/events');
 
   LoginController() {
+    isLoading = ValueNotifier<bool>(false);
     stream.receiveBroadcastStream().listen((d) => _onRedirected(d));
   }
 
   _onRedirected(String uri) async {
+    changeLoading(true);
     closeWebView();
     changeCode(uri.split('=').last);
-    print(code);
     getToken();
   }
 
@@ -42,16 +45,47 @@ class LoginController {
     );
     token = res['access_token'];
     saveToken(res['access_token']);
+    navigateTo('/home');
   }
 
   void saveToken(String value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = value;
-    print(value + ' Token');
-    if (token != null) {
+    if (value != null) {
       prefs.setString('token', value);
     }
   }
+
+  Future<bool> checkToken() async {
+    HttpAdapter httpClient = HttpAdapter(Client());
+
+    final res = await httpClient.request(
+        url: 'https://api.dribbble.com/v2/user',
+        method: 'get',
+        headers: {'Authorization': 'Bearer $token'});
+    return res != null;
+  }
+
+  void loadToken() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String value = prefs.getString('token');
+    if (value != null) {
+      print(value + ' token');
+      token = value;
+      if (await checkToken()) {
+        navigateTo('/home');
+      } else
+        navigateTo('/login');
+    } else
+      navigateTo('/login');
+  }
+
+  changeContext(BuildContext ctxt) => context = ctxt;
+  navigateTo(String route) {
+    Navigator.pushReplacementNamed(context, route);
+  }
+
+  changeLoading(bool value) => isLoading.value = value;
 
   String get url =>
       'https://dribbble.com/oauth/authorize?client_id=$clientId&redirect_uri=poc://deeplink.flutter.dev&scope=public+upload';

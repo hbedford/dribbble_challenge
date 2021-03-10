@@ -1,5 +1,7 @@
+import 'package:dribbble_challenge/ui/screens/loading/loading_screen.dart';
 import 'package:flutter/material.dart';
 
+import 'screens/home/home_screen.dart';
 import 'screens/login/login_screen.dart';
 
 class App extends StatelessWidget {
@@ -17,8 +19,12 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: themeData(),
-      initialRoute: '/login',
-      routes: {'/login': (context) => LoginScreen()},
+      initialRoute: '/loading',
+      routes: {
+        '/loading': (context) => LoadingScreen(),
+        '/login': (context) => LoginScreen(),
+        '/home': (context) => HomeScreen()
+      },
     );
   }
 }

@@ -6,6 +6,7 @@ class LoginScreen extends StatelessWidget {
   final controller = injection.get<LoginController>();
   @override
   Widget build(BuildContext context) {
+    controller.changeContext(context);
     return Scaffold(
         body: Center(
       child: Padding(
@@ -23,11 +24,16 @@ class LoginScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Expanded(
-                  child: ElevatedButton(
-                    child: Text('Entrar'.toUpperCase()),
-                    onPressed: controller.login,
-                  ),
+                ValueListenableBuilder(
+                  valueListenable: controller.isLoading,
+                  builder: (_, value, child) => value
+                      ? CircularProgressIndicator()
+                      : Expanded(
+                          child: ElevatedButton(
+                            child: Text('Entrar'.toUpperCase()),
+                            onPressed: controller.login,
+                          ),
+                        ),
                 ),
               ],
             ),
