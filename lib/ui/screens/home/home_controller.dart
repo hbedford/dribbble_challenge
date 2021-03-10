@@ -44,6 +44,16 @@ class HomeController {
   goToNewShot(BuildContext context) {
     final controller = injection.get<ShotController>();
     controller.changeShot(Shot());
-    Navigator.pushNamed(context, '/newshot');
+    Navigator.pushNamed(context, '/newshot').then((value) {
+      if (value) {
+        Flushbar(
+          backgroundColor: Colors.blue,
+          duration: Duration(seconds: 4),
+          title: 'Enviado com sucesso',
+          message: 'O shot foi adicionado!!',
+        ).show(context);
+        loadShots(context);
+      }
+    });
   }
 }

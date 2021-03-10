@@ -14,7 +14,7 @@ import 'package:image_picker/image_picker.dart';
 class ShotController {
   final ValueNotifier<Shot> shot = ValueNotifier<Shot>(null);
   ShotController();
-
+  bool isJpg;
   changeShot(Shot value) => shot.value = value;
 
   Future getImage({bool send = false, BuildContext context}) async {
@@ -24,7 +24,13 @@ class ShotController {
       File file = File(pickedFile.path);
       var image = decodeImage(file.readAsBytesSync());
       var img = copyResize(image, width: 400, height: 300);
-      File newFile = await File(pickedFile.path).writeAsBytes(encodePng(img));
+
+      if (file.path.split('.').last == 'png')
+        isJpg = false;
+      else
+        isJpg = true;
+      File newFile = await File(pickedFile.path)
+          .writeAsBytes(isJpg ? encodeJpg(img) : encodePng(img));
       shot.value.addImageFile(newFile);
       if (send) sendAttachment(context);
     } else {
@@ -37,20 +43,44 @@ class ShotController {
       final controller = injection.get<LoginController>();
       var uri = Uri.parse("https://api.dribbble.com/v2/shots");
       var request = new MultipartRequest("POST", uri);
+      print(shot.value.file.value.path);
       var multipartFile = await MultipartFile.fromPath(
           "image", shot.value.file.value.path,
-          contentType:
-              MediaType('image', shot.value.file.value.path.split('.').last));
+          contentType: MediaType('image',
+              isJpg ? 'jpeg' : shot.value.file.value.path.split('.').last));
       request.files.add(multipartFile);
-      request.fields.addAll(shot.value.toJson);
+      print(shot.value.toJson.toString());
+      request.fields.addAll(Map.from(shot.value.toJson));
+      request.fields.removeWhere((key, value) => value == null);
       request.headers['Authorization'] = 'Bearer ${controller.token}';
 
-      StreamedResponse response = await request.send();
-      print(response.reasonPhrase);
-      response.stream.transform(utf8.decoder).listen((value) {
-        print(value);
-      });
+      try {
+        StreamedResponse response = await request.send();
+        print(response.reasonPhrase);
+        response.stream.transform(utf8.decoder).listen((value) {
+          if (value == 'Accepted') {
+            Navigator.pop(context, true);
+          } else {
+            Flushbar(
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 4),
+              title: 'Ops, houve um problema',
+              message: 'Ocorreu algo de errado no enviado do Shot.',
+            ).show(context);
+          }
+        });
+      } catch (e) {
+        Flushbar(
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 4),
+          title: 'Ops, houve um problema',
+          message: 'Certifique que sua conexão esteja estavel.',
+        ).show(context);
+      }
     } else {
+      if (!shot.value.isValidImage) {
+        shot.value.changeHaveImage(false);
+      }
       if (!shot.value.isValidTitle) {
         shot.value.changeErrorText('É necessario inserir um titulo.');
       }

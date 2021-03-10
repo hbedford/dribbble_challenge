@@ -30,14 +30,20 @@ class NewShotScreen extends StatelessWidget {
                     builder: (_, value, child) => InkWell(
                       onTap: () => controller.getImage(),
                       child: value == null
-                          ? DottedBorder(
-                              dashPattern: [8, 4],
-                              borderType: BorderType.RRect,
-                              radius: Radius.circular(30),
-                              padding: EdgeInsets.all(6),
-                              child: Center(
-                                child: Text('Adicionar Imagem'),
-                              ))
+                          ? ValueListenableBuilder(
+                              valueListenable: controller.shot.value.haveImage,
+                              builder: (_, haveImage, child) => DottedBorder(
+                                  color: haveImage == true
+                                      ? Colors.black
+                                      : Colors.red,
+                                  dashPattern: [8, 4],
+                                  borderType: BorderType.RRect,
+                                  radius: Radius.circular(30),
+                                  padding: EdgeInsets.all(6),
+                                  child: Center(
+                                    child: Text('Adicionar Imagem'),
+                                  )),
+                            )
                           : Image.file(value),
                     ),
                   )),

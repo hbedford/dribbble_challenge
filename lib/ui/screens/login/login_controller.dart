@@ -87,7 +87,6 @@ class LoginController {
       } else {
         navigateTo('/login');
         Future.delayed(Duration(seconds: 1), () {
-          print('a');
           Flushbar(
             backgroundColor: Colors.red,
             duration: Duration(seconds: 4),

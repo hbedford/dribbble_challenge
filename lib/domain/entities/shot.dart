@@ -11,12 +11,17 @@ class Shot {
   String image;
   ValueNotifier<File> file;
   ValueNotifier<String> textError;
+  ValueNotifier<bool> haveImage;
 
-  final TextEditingController titleEdit = TextEditingController();
-  final TextEditingController descriptionEdit = TextEditingController();
-  Shot()
-      : this.file = ValueNotifier<File>(null),
-        this.textError = ValueNotifier<String>(null);
+  TextEditingController titleEdit;
+  TextEditingController descriptionEdit;
+  Shot() {
+    this.titleEdit = TextEditingController();
+    this.descriptionEdit = TextEditingController();
+    this.file = ValueNotifier<File>(null);
+    this.textError = ValueNotifier<String>(null);
+    this.haveImage = ValueNotifier<bool>(true);
+  }
   Shot.fromJson(Map map) {
     this.id = map['id'];
     this.title = map['title'];
@@ -29,13 +34,14 @@ class Shot {
   }
   addImageFile(File value) => file.value = value;
   changeErrorText(String value) => textError.value = value;
+  changeHaveImage(bool value) => haveImage.value = value;
   Map get toJson => {
-        'id': this.id,
-        'title': this.title,
-        'description': this.description,
+        'title': titleEdit.text,
+        'description':
+            descriptionEdit.text.isNotEmpty ? descriptionEdit.text : null,
       };
   bool get isValidTitle => titleEdit.text.isNotEmpty;
-  bool get isValidImage => file != null;
+  bool get isValidImage => file.value != null;
   bool get isValidShot => isValidTitle && isValidImage;
 
   List<String> get othersImages {
