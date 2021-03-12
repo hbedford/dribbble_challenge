@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dribbble_challenge/domain/entities/shot.dart';
 import 'package:dribbble_challenge/infra/database/database_helper.dart';
 import 'package:dribbble_challenge/ui/screens/login/login_controller.dart';
