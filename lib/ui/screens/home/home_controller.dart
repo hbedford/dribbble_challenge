@@ -1,37 +1,25 @@
 import 'package:dribbble_challenge/domain/entities/shot.dart';
-import 'package:dribbble_challenge/infra/http/http_adapter.dart';
 import 'package:dribbble_challenge/infra/injections.dart';
-import 'package:dribbble_challenge/ui/screens/login/login_controller.dart';
+import 'package:dribbble_challenge/infra/repositories/add_shots_repository.dart';
+import 'package:dribbble_challenge/infra/repositories/fetch_shots_repository.dart';
 import 'package:dribbble_challenge/ui/screens/shots/shot_controller.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
-import 'package:http/http.dart';
 
 class HomeController {
-  ValueNotifier<List<Shot>> list = ValueNotifier<List<Shot>>([]);
+  ValueNotifier<List<Shot>> list = ValueNotifier<List<Shot>>(null);
   HomeController();
-  Future getShots() async {
-    final controller = GetIt.I.get<LoginController>();
-    HttpAdapter httpClient = HttpAdapter(Client());
-
-    try {
-      var res = await httpClient.request(
-        url:
-            'https://api.dribbble.com/v2/user/shots?access_token=${controller.token}',
-        method: 'get',
-      );
-      return res;
-    } catch (e) {
-      return null;
-    }
-  }
-
+  changeShots(List<Shot> value) => list.value = value;
   Future loadShots(BuildContext context) async {
-    List value = await getShots();
+    List<Shot> value = await GetShotsFromRemote().fetch();
     if (value != null) {
-      list.value = value.map((image) => Shot.fromJson(image)).toList();
+      await AddShotsDatabase().addAll(value);
+      changeShots(value);
     } else {
+      if (list.value == null || list.value.length == 0) {
+        print('a');
+        changeShots(await GetShotsDatabase().fetch());
+      }
       Flushbar(
         backgroundColor: Colors.red,
         duration: Duration(seconds: 4),
