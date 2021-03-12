@@ -45,12 +45,12 @@ class DatabaseHelper {
     return await db.insert('shots', row);
   }
 
-  Future<int> insertAllShots(List<Map<String, dynamic>> list) async {
+  Future<void> insertAllShots(List<Map<String, dynamic>> list) async {
     Database db = await instance.database;
+    await removeAllShots();
     list.forEach((element) async {
       await db.insert('shots', element);
     });
-    return null;
   }
 
   Future<int> insertShotWaiting(Map<String, dynamic> row) async {

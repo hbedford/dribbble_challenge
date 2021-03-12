@@ -24,21 +24,18 @@ class ShotWidget extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(30),
-                child: shot.image == null
-                    ? Image.file(shot.file.value)
-                    : Image.network(
-                        shot.image,
-                        frameBuilder:
-                            (context, child, frame, wasSynchronouslyLoaded) =>
-                                child,
-                        loadingBuilder: (_, child, loadingProgress) => Center(
-                          child: loadingProgress == null
-                              ? child
-                              : CircularProgressIndicator(),
-                        ),
-                        height: size.height,
-                        width: size.width,
-                      ),
+                child: Image.network(
+                  shot.image,
+                  frameBuilder:
+                      (context, child, frame, wasSynchronouslyLoaded) => child,
+                  loadingBuilder: (_, child, loadingProgress) => Center(
+                    child: loadingProgress == null
+                        ? child
+                        : CircularProgressIndicator(),
+                  ),
+                  height: size.height,
+                  width: size.width,
+                ),
               ),
             ),
             Row(

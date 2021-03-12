@@ -1,10 +1,6 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 
 class Shot {
   int id;
@@ -15,7 +11,7 @@ class Shot {
   String updateAt;
   String image;
   List<String> attachments;
-  ValueNotifier<File> file;
+  ValueNotifier<File> file = ValueNotifier<File>(null);
   ValueNotifier<String> textError;
   ValueNotifier<bool> haveImage;
 
@@ -25,7 +21,6 @@ class Shot {
     this.attachments = [];
     this.titleEdit = TextEditingController();
     this.descriptionEdit = TextEditingController();
-    this.file = ValueNotifier<File>(null);
     this.textError = ValueNotifier<String>(null);
     this.haveImage = ValueNotifier<bool>(true);
   }
@@ -33,14 +28,12 @@ class Shot {
     this.id = map['id'];
     this.remoteId = map['id'];
     this.title = map['title'];
-
+    this.image = map['images']['normal'];
     this.description = map['description'];
     this.publishedAt = map['published_at'];
     this.updateAt = map['update_at'];
-    this.image = map['images']['normal'];
     this.attachments = List<String>.from(
         map['attachments'].map((data) => data['url']).toList());
-    this.file = ValueNotifier<File>(null);
     this.textError = ValueNotifier<String>(null);
   }
   Shot.fromMap(Map map) {
@@ -50,13 +43,13 @@ class Shot {
     this.description = map['description'];
     this.publishedAt = map['published_at'];
     this.updateAt = map['update_at'];
-    this.image = map['normal'];
-    /*   this.attachments = List<String>.from(
-        map['attachments']?.map((data) => data['url']).toList()); */
-    this.file = ValueNotifier<File>(null);
+    this.image = map['image'];
     this.textError = ValueNotifier<String>(null);
   }
-  addImageFile(File value) => file.value = value;
+  addImageFile(File value) {
+    file.value = value;
+  }
+
   changeErrorText(String value) => textError.value = value;
   changeHaveImage(bool value) => haveImage.value = value;
   Map get toJson => {
@@ -64,30 +57,11 @@ class Shot {
         'description':
             descriptionEdit.text.isNotEmpty ? descriptionEdit.text : null,
       };
-  Future<Map<String, dynamic>> get toMap async {
-    if (file.value == null) {
-      file.value = await _fileFromImageUrl();
-    }
-    List<int> imageBytes = await file.value.readAsBytes();
-    String img = base64Encode(imageBytes);
-    return {
-      'title': title ?? titleEdit.text,
-      'remoteid': remoteId,
-      'image': img,
-    };
-  }
-
-  Future<File> _fileFromImageUrl() async {
-    final response = await http.get(image);
-
-    final documentDirectory = await getApplicationDocumentsDirectory();
-
-    final f = File(join(documentDirectory.path, 'image.jpg'));
-
-    f.writeAsBytesSync(response.bodyBytes);
-
-    return f;
-  }
+  Map<String, dynamic> get toMap => {
+        'title': title ?? titleEdit.text,
+        'remoteid': remoteId,
+        'image': image,
+      };
 
   bool get isValidTitle => titleEdit.text.isNotEmpty;
   bool get isValidImage => file.value != null;

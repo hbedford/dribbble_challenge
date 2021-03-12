@@ -16,10 +16,9 @@ class HomeController {
     List<Shot> value = await GetShotsFromRemote().fetch();
     if (value != null) {
       await AddShotsDatabase().addAll(value);
-      changeShots(value);
+      changeShots(await GetShotsDatabase().fetch());
     } else {
       if (list.value == null || list.value.length == 0) {
-        print('a');
         changeShots(await GetShotsDatabase().fetch());
       }
       Flushbar(

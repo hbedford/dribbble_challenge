@@ -16,7 +16,6 @@ class GetShotsDatabase extends FetchShotsRepository {
   fetch() async {
     final dbHelper = DatabaseHelper.instance;
     List<Map> list = await dbHelper.getShots();
-    print(list.length);
     return list.map((shot) => Shot.fromMap(shot)).toList();
   }
 }
@@ -32,7 +31,6 @@ class GetShotsFromRemote extends FetchShotsRepository {
             'https://api.dribbble.com/v2/user/shots?access_token=${controller.token}',
         method: 'get',
       );
-      print(res);
       return res == null
           ? null
           : res.map<Shot>((shot) => Shot.fromJson(shot)).toList();
@@ -46,7 +44,6 @@ class GetShotsWaitingDatabase extends FetchShotsRepository {
   fetch() async {
     final dbHelper = DatabaseHelper.instance;
     List<Map> list = await dbHelper.getShots();
-    print(list.length);
     List<Shot> shots = [];
     list.map((shot) async {
       final decode = base64Decode(shot['image']);

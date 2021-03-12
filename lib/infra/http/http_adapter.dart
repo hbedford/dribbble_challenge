@@ -45,7 +45,6 @@ class HttpAdapter implements HttpClient {
   }
 
   _handleResponse(Response response) {
-    print(response.body + ' teste');
     switch (response.statusCode) {
       case 200:
         return response.body is List

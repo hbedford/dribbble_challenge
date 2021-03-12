@@ -40,7 +40,7 @@ class AddShotRemote extends AddShotRepository {
 class AddShotDatabase extends AddShotRepository {
   Future<bool> add(Shot shot) async {
     final dbHelper = DatabaseHelper.instance;
-    int value = await dbHelper.insertShot(await shot.toMap);
+    int value = await dbHelper.insertShot(shot.toMap);
     return value != 0;
   }
 }
@@ -48,21 +48,21 @@ class AddShotDatabase extends AddShotRepository {
 class AddShotWaitingDatabase extends AddShotRepository {
   Future<bool> add(Shot shot) async {
     final dbHelper = DatabaseHelper.instance;
-    int value = await dbHelper
-        .insertShotWaiting(Map<String, dynamic>.from(await shot.toMap));
+    int value =
+        await dbHelper.insertShotWaiting(Map<String, dynamic>.from(shot.toMap));
     return value != 0;
   }
 }
 
 class AddShotsDatabase {
-  Future<void> addAll(List<Shot> shots) async {
+  Future<List<Shot>> addAll(List<Shot> shots) async {
     final dbHelper = DatabaseHelper.instance;
-    await dbHelper.removeAllShots();
     List<Map<String, dynamic>> list = [];
     shots.forEach((element) async {
-      Map<String, dynamic> map = await element.toMap;
-      list.add(map);
+      list.add(element.toMap);
     });
     await dbHelper.insertAllShots(list);
+
+    return list.map((e) => Shot.fromMap(e)).toList();
   }
 }
