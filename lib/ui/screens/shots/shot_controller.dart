@@ -1,8 +1,8 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:dribbble_challenge/domain/entities/shot.dart';
 import 'package:dribbble_challenge/infra/injections.dart';
+import 'package:dribbble_challenge/infra/repositories/add_shots_repository.dart';
 import 'package:dribbble_challenge/ui/screens/login/login_controller.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +19,9 @@ class ShotController {
 
   Future getImage({bool send = false, BuildContext context}) async {
     final picker = ImagePicker();
-    PickedFile pickedFile = await picker.getImage(source: ImageSource.gallery);
+    PickedFile pickedFile = await picker.getImage(
+      source: ImageSource.gallery,
+    );
     if (pickedFile != null) {
       File file = File(pickedFile.path);
       var image = decodeImage(file.readAsBytesSync());
@@ -40,41 +42,19 @@ class ShotController {
 
   sendShot(BuildContext context) async {
     if (shot.value.isValidShot) {
-      final controller = injection.get<LoginController>();
-      var uri = Uri.parse("https://api.dribbble.com/v2/shots");
-      var request = new MultipartRequest("POST", uri);
-      print(shot.value.file.value.path);
-      var multipartFile = await MultipartFile.fromPath(
-          "image", shot.value.file.value.path,
-          contentType: MediaType('image',
-              isJpg ? 'jpeg' : shot.value.file.value.path.split('.').last));
-      request.files.add(multipartFile);
-      print(shot.value.toJson.toString());
-      request.fields.addAll(Map.from(shot.value.toJson));
-      request.fields.removeWhere((key, value) => value == null);
-      request.headers['Authorization'] = 'Bearer ${controller.token}';
-
-      try {
-        StreamedResponse response = await request.send();
-        print(response.reasonPhrase);
-        response.stream.transform(utf8.decoder).listen((value) {
-          if (value == 'Accepted') {
-            Navigator.pop(context, true);
-          } else {
-            Flushbar(
-              backgroundColor: Colors.red,
-              duration: Duration(seconds: 4),
-              title: 'Ops, houve um problema',
-              message: 'Ocorreu algo de errado no enviado do Shot.',
-            ).show(context);
-          }
-        });
-      } catch (e) {
+      if (await AddShotRemote().add(shot.value)) {
+        print('a');
+        await AddShotDatabase().add(shot.value);
+        Navigator.pop(context, true);
+      } else {
+        print('b');
+        await AddShotWaitingDatabase().add(shot.value);
         Flushbar(
           backgroundColor: Colors.red,
           duration: Duration(seconds: 4),
           title: 'Ops, houve um problema',
-          message: 'Certifique que sua conexão esteja estavel.',
+          message:
+              'Ocorreu algo de errado no enviado do Shot para remoto.\ Mas não se preocupe, quando voltar a conexão sera enviado',
         ).show(context);
       }
     } else {
