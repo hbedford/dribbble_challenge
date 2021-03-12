@@ -1,6 +1,5 @@
-import 'package:dribbble_challenge/infra/injections.dart';
 import 'package:flutter/material.dart';
-
+import 'package:dribbble_challenge/infra/injections.dart';
 import 'components/shot_widget.dart';
 import 'home_controller.dart';
 
@@ -20,6 +19,14 @@ class HomeScreen extends StatelessWidget {
               .headline1
               .copyWith(color: Colors.white),
         ),
+        actions: [
+          IconButton(
+              icon: Icon(
+                Icons.logout,
+                color: Colors.white,
+              ),
+              onPressed: () => controller.logout(context))
+        ],
       ),
       body: RefreshIndicator(
         onRefresh: () => controller.loadShots(context),

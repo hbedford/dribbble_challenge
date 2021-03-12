@@ -2,9 +2,11 @@ import 'package:dribbble_challenge/domain/entities/shot.dart';
 import 'package:dribbble_challenge/infra/injections.dart';
 import 'package:dribbble_challenge/infra/repositories/add_shots_repository.dart';
 import 'package:dribbble_challenge/infra/repositories/fetch_shots_repository.dart';
+import 'package:dribbble_challenge/ui/screens/login/login_controller.dart';
 import 'package:dribbble_challenge/ui/screens/shots/shot_controller.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeController {
   ValueNotifier<List<Shot>> list = ValueNotifier<List<Shot>>(null);
@@ -43,5 +45,15 @@ class HomeController {
         loadShots(context);
       }
     });
+  }
+
+  logout(BuildContext context) async {
+    final controller = injection.get<LoginController>();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('token');
+    controller.token = null;
+    controller.changeLoading(false);
+
+    Navigator.pushReplacementNamed(context, '/login');
   }
 }
