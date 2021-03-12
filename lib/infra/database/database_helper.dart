@@ -25,14 +25,15 @@ class DatabaseHelper {
     await db.execute('''
         create table shots ( 
           id integer primary key autoincrement, 
-          idremote integer,
+          remoteid integer,
           title text not null,
           description text,
           image text not null)
         ''');
     await db.execute('''
         create table shotswaiting ( 
-          id integer primary key autoincrement, 
+          id integer primary key autoincrement,
+          remoteid integer, 
           title text not null,
           description text,
           image text not null)
@@ -60,5 +61,17 @@ class DatabaseHelper {
   Future<List<Map<String, dynamic>>> getShots() async {
     Database db = await instance.database;
     return await db.query('shots');
+  }
+
+  Future<bool> removeWaitingShot(int id) async {
+    Database db = await instance.database;
+    return await db.delete('shotswaiting', where: 'id= ?', whereArgs: [id]) ==
+        1;
+  }
+
+  Future<bool> removeAllShots() async {
+    Database db = await instance.database;
+    await db.execute('DELETE  FROM shots');
+    return true;
   }
 }
