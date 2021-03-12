@@ -14,6 +14,7 @@ class LoginController {
 
   String code;
   String token;
+  bool isPro;
   BuildContext context;
   ValueNotifier<bool> isLoading;
   static const stream = const EventChannel('poc.deeplink.flutter.dev/events');
@@ -69,6 +70,11 @@ class LoginController {
           url: 'https://api.dribbble.com/v2/user',
           method: 'get',
           headers: {'Authorization': 'Bearer $token'});
+      print(res);
+      if (res != null) {
+        isPro = res['pro'] != false || List.from(res['teams']).length > 0;
+        print(isPro);
+      }
       return res != null;
     } catch (e) {
       return false;

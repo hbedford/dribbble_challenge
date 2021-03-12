@@ -1,5 +1,7 @@
 import 'package:dribbble_challenge/infra/injections.dart';
+import 'package:dribbble_challenge/ui/screens/login/login_controller.dart';
 import 'package:dribbble_challenge/ui/screens/shots/shot_controller.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
 import 'components/textfield_widget.dart';
 
@@ -8,6 +10,7 @@ import 'package:dribbble_challenge/domain/entities/shot.dart';
 
 class NewShotScreen extends StatelessWidget {
   final controller = injection.get<ShotController>();
+  final loginController = injection.get<LoginController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,17 +125,26 @@ class OtherShotWidget extends StatelessWidget {
   OtherShotWidget({this.shot, @required this.size});
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: DottedBorder(
-        dashPattern: [8, 4],
-        borderType: BorderType.RRect,
-        radius: Radius.circular(10),
-        padding: EdgeInsets.all(6),
-        child: Container(
-          height: size.height,
-          width: size.width,
-          child: Icon(Icons.image),
+    return InkWell(
+      onTap: () => Flushbar(
+        backgroundColor: Colors.red,
+        title: 'Conta free',
+        message:
+            'Necessário ter uma conta Pro ou fazer parte de um time para adicionar mais images',
+        duration: Duration(seconds: 4),
+      ).show(context),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: DottedBorder(
+          dashPattern: [8, 4],
+          borderType: BorderType.RRect,
+          radius: Radius.circular(10),
+          padding: EdgeInsets.all(6),
+          child: Container(
+            height: size.height,
+            width: size.width,
+            child: Icon(Icons.image),
+          ),
         ),
       ),
     );
