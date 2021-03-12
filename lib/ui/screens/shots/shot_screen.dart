@@ -57,8 +57,11 @@ class ShotScreen extends StatelessWidget {
                               height: constraints.maxHeight * 0.4,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(30),
-                                child:
-                                    Image.network(controller.shot.value.image),
+                                child: controller.shot.value.file.value != null
+                                    ? Image.file(
+                                        controller.shot.value.file.value)
+                                    : Image.network(
+                                        controller.shot.value.image),
                               ),
                             ),
                           ),
