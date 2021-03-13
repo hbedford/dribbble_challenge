@@ -8,7 +8,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    controller.loadShots(context);
+    controller.getShots(context);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -29,35 +29,49 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: () => controller.loadShots(context),
+        onRefresh: () => controller.getShots(context),
         child: LayoutBuilder(
           builder: (_, constraints) => Padding(
             padding: const EdgeInsets.all(8.0),
             child: ValueListenableBuilder(
-              valueListenable: controller.list,
-              builder: (_, value, child) => value != null
-                  ? value.isEmpty
-                      ? Center(
-                          child: Text(
-                            'Lista vazia',
-                            style: TextStyle(color: Colors.black),
-                          ),
-                        )
-                      : ListView.builder(
-                          itemCount: value.length,
-                          itemBuilder: (context, int index) => ShotWidget(
-                            shot: value[index],
-                            size: Size(constraints.maxWidth,
-                                constraints.maxHeight * 0.4),
-                          ),
-                        )
-                  : Center(
-                      child: Text(
-                        'Ops ocorreu algo de errado',
-                        style: TextStyle(color: Colors.black),
-                      ),
-                    ),
-            ),
+                valueListenable: controller.list,
+                builder: (_, value, child) => value != null
+                    ? value.isEmpty
+                        ? SingleChildScrollView(
+                            physics: AlwaysScrollableScrollPhysics(),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                  minHeight: constraints.maxHeight,
+                                  minWidth: constraints.maxWidth),
+                              child: Center(
+                                child: Text(
+                                  'Lista vazia',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            ),
+                          )
+                        : ListView.builder(
+                            itemCount: value.length,
+                            itemBuilder: (context, int index) => ShotWidget(
+                              shot: value[index],
+                              size: Size(constraints.maxWidth,
+                                  constraints.maxHeight * 0.4),
+                            ),
+                          )
+                    : ValueListenableBuilder(
+                        valueListenable: controller.isLoading,
+                        builder: (_, loading, child) => loading && value == null
+                            ? Center(
+                                child: CircularProgressIndicator(),
+                              )
+                            : Center(
+                                child: Text(
+                                  'Ops ocorreu algo de errado',
+                                  style: TextStyle(color: Colors.black),
+                                ),
+                              ),
+                      )),
           ),
         ),
       ),

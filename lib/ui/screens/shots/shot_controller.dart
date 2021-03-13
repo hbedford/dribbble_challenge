@@ -1,8 +1,10 @@
 import 'dart:io';
 
+import 'package:dribbble_challenge/data/cache/use/cases/add_to_database.dart';
+import 'package:dribbble_challenge/data/remote/usecases/add_shot_remote.dart';
 import 'package:dribbble_challenge/domain/entities/shot.dart';
 import 'package:dribbble_challenge/infra/injections.dart';
-import 'package:dribbble_challenge/infra/repositories/add_shots_repository.dart';
+
 import 'package:dribbble_challenge/ui/screens/login/login_controller.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/material.dart';
@@ -43,12 +45,10 @@ class ShotController {
   sendShot(BuildContext context) async {
     if (shot.value.isValidShot) {
       if (await AddShotRemote().add(shot.value)) {
-        print('a');
-        await AddShotDatabase().add(shot.value);
         Navigator.pop(context, true);
       } else {
         print('b');
-        await AddShotWaitingDatabase().add(shot.value);
+        await AddToDatabase().addWaiting(shot.value);
         Flushbar(
           backgroundColor: Colors.red,
           duration: Duration(seconds: 4),

@@ -1,6 +1,8 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class Shot {
   int id;
@@ -9,7 +11,8 @@ class Shot {
   String description;
   String publishedAt;
   String updateAt;
-  String image;
+  Uint8List imageData;
+  String url;
   List<String> attachments;
   ValueNotifier<File> file = ValueNotifier<File>(null);
   ValueNotifier<String> textError;
@@ -28,7 +31,7 @@ class Shot {
     this.id = map['id'];
     this.remoteId = map['id'];
     this.title = map['title'];
-    this.image = map['images']['normal'];
+    this.url = map['images']['normal'];
     this.description = map['description'];
     this.publishedAt = map['published_at'];
     this.updateAt = map['update_at'];
@@ -43,7 +46,7 @@ class Shot {
     this.description = map['description'];
     this.publishedAt = map['published_at'];
     this.updateAt = map['update_at'];
-    this.image = map['image'];
+    this.imageData = map['image'];
     this.textError = ValueNotifier<String>(null);
   }
   addImageFile(File value) {
@@ -60,7 +63,7 @@ class Shot {
   Map<String, dynamic> get toMap => {
         'title': title ?? titleEdit.text,
         'remoteid': remoteId,
-        'image': image,
+        'image': imageData,
       };
 
   bool get isValidTitle => titleEdit.text.isNotEmpty;
@@ -77,5 +80,10 @@ class Shot {
     List<String> list = List.filled(3, null);
 
     return list;
+  }
+
+  Future fileFromImageUrl() async {
+    final response = await http.get(Uri.parse(url));
+    imageData = response.bodyBytes;
   }
 }
