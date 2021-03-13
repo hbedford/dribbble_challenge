@@ -1,17 +1,11 @@
 import 'package:dribbble_challenge/domain/entities/shot.dart';
-import 'package:dribbble_challenge/infra/database/database_helper.dart';
+import 'package:dribbble_challenge/infra/injections.dart';
 import 'package:dribbble_challenge/ui/screens/login/login_controller.dart';
 import 'package:http/http.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../injections.dart';
-
-abstract class AddShotRepository {
-  Future<bool> add(Shot shot);
-}
-
-class AddShotRemote extends AddShotRepository {
+class AddShotRemote {
   Future<bool> add(Shot shot) async {
     final controller = injection.get<LoginController>();
     var uri = Uri.parse("https://api.dribbble.com/v2/shots");
@@ -34,35 +28,5 @@ class AddShotRemote extends AddShotRepository {
       prefs.setBool('lostConnection', true);
       return false;
     }
-  }
-}
-
-class AddShotDatabase extends AddShotRepository {
-  Future<bool> add(Shot shot) async {
-    final dbHelper = DatabaseHelper.instance;
-    int value = await dbHelper.insertShot(shot.toMap);
-    return value != 0;
-  }
-}
-
-class AddShotWaitingDatabase extends AddShotRepository {
-  Future<bool> add(Shot shot) async {
-    final dbHelper = DatabaseHelper.instance;
-    int value =
-        await dbHelper.insertShotWaiting(Map<String, dynamic>.from(shot.toMap));
-    return value != 0;
-  }
-}
-
-class AddShotsDatabase {
-  Future<List<Shot>> addAll(List<Shot> shots) async {
-    final dbHelper = DatabaseHelper.instance;
-    List<Map<String, dynamic>> list = [];
-    shots.forEach((element) async {
-      list.add(element.toMap);
-    });
-    await dbHelper.insertAllShots(list);
-
-    return list.map((e) => Shot.fromMap(e)).toList();
   }
 }
