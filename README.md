@@ -2,5 +2,4 @@
 
 View and Add Dribbble app
 
-## Getting Started
 
